@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Happy Birthday Archana ❤️</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script src="https://cdn.tailwindcss.com"></script>
+
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+<link href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,700&display=swap" rel="stylesheet">
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r155/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+<style>
+body{
+  font-family:'Satoshi',sans-serif;
+  background:#05010a;
+  overflow:hidden;
+  cursor:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32"><text y="24" font-size="24">💖</text></svg>') 16 16, auto;
+}
+.aurora{
+  position:fixed; inset:0;
+  background:
+    radial-gradient(circle at 20% 20%, hsla(350,80%,60%,.45), transparent 40%),
+    radial-gradient(circle at 80% 30%, hsla(330,70%,55%,.35), transparent 45%),
+    radial-gradient(circle at 50% 80%, hsla(260,60%,40%,.35), transparent 45%);
+  animation:auroraMove 18s ease-in-out infinite alternate;
+  z-index:-4;
+}
+@keyframes auroraMove{
+  100%{transform:scale(1.25) translate(-30px,-20px)}
+}
+.star{
+  position:fixed;
+  width:2px;
+  height:2px;
+  background:white;
+  border-radius:50%;
+  animation:twinkle 3s infinite alternate;
+  opacity:.8;
+  z-index:-3;
+}
+@keyframes twinkle{from{opacity:.2}to{opacity:1}}
+.flower{
+  position:fixed;
+  top:-10%;
+  font-size:22px;
+  animation:fall linear infinite;
+  z-index:-2;
+}
+@keyframes fall{to{transform:translateY(110vh) rotate(360deg)}}
+.glass{
+  background:rgba(25,5,10,.6);
+  backdrop-filter:blur(25px);
+  border:1px solid rgba(255,255,255,.18);
+  box-shadow:0 20px 60px rgba(0,0,0,.7);
+}
+.gradient-text{
+  background:linear-gradient(90deg,#ffb3c6,#fff,#ff8fab);
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+}
+.name-glow{
+  animation:glow 2.5s ease-in-out infinite alternate;
+}
+@keyframes glow{
+  from{text-shadow:0 0 10px #ff8fab}
+  to{text-shadow:0 0 30px #ff4d6d}
+}
+.btn{
+  background:linear-gradient(135deg,#ff4d6d,#ff1f5a);
+  box-shadow:0 0 30px rgba(255,77,109,.8);
+}
+.btn:hover{transform:scale(1.06)}
+.photo{
+  width:180px;
+  height:240px;
+  object-fit:cover;
+  border-radius:16px;
+  box-shadow:0 12px 35px rgba(255,105,135,.6);
+  animation:float 6s ease-in-out infinite;
+}
+@keyframes float{50%{transform:translateY(-14px)}}
+</style>
+</head>
+
+<body class="text-gray-200">
+
+<div class="aurora"></div>
+<canvas id="bgHearts" class="fixed inset-0 z-[-1]"></canvas>
+
+<!-- 🌌 Stars -->
+<script>
+for(let i=0;i<120;i++){
+  const s=document.createElement("div");
+  s.className="star";
+  s.style.left=Math.random()*100+"vw";
+  s.style.top=Math.random()*100+"vh";
+  s.style.animationDuration=2+Math.random()*4+"s";
+  document.body.appendChild(s);
+}
+</script>
+
+<!-- 🌸 Flowers -->
+<script>
+for(let i=0;i<35;i++){
+  const f=document.createElement("div");
+  f.className="flower";
+  f.innerHTML="🌸";
+  f.style.left=Math.random()*100+"vw";
+  f.style.animationDuration=6+Math.random()*6+"s";
+  document.body.appendChild(f);
+}
+</script>
+
+<!-- 🎶 Music -->
+<audio id="bgMusic" autoplay loop muted>
+  <source src="music/birthday.mp3" type="audio/mpeg">
+</audio>
+
+<script>
+const music=document.getElementById("bgMusic");
+music.volume=0;
+document.addEventListener("click",()=>{
+  if(music.muted){
+    music.muted=false;
+    music.play().catch(()=>{});
+    let v=0;
+    const fade=setInterval(()=>{
+      v+=0.02;
+      music.volume=Math.min(v,0.5);
+      if(v>=0.5) clearInterval(fade);
+    },100);
+  }
+});
+</script>
+
+<div class="h-screen flex items-center justify-center px-4">
+  <div id="card" class="glass max-w-3xl w-full p-8 rounded-3xl text-center space-y-6"></div>
+</div>
+
+<script>
+/* 🎂 BIRTHDAY DATE — 13 FEB 2026 MIDNIGHT */
+const birthdayDate = new Date("2026-02-13T00:00:00");
+
+/* Photos */
+const photos=[
+ "images/photo1.jpg",
+ "images/photo2.jpg",
+ "images/photo3.jpg"
+];
+let photoIndex=0;
+
+/* Notes */
+const steps=[
+ {title:"Hey Archana 💖",text:"Some feelings don’t need noise… they just exist."},
+ {title:"A Little Truth 💌",text:"If looks could kill, I would have been dead by now from your captivating looks. Wish you a happy birthday!"},
+ {title:"From My Heart ❤️",text:"Happy birthday to the one who makes my heart skip a beat and fills my days with pure joy. You are the reason for my happiness."},
+ {title:"It’s Almost Time 🎂",text:"Just a heartbeat away from something special…",final:true}
+];
+
+let step=0;
+const card=document.getElementById("card");
+
+/* Countdown */
+function getCountdown(){
+  const now=new Date();
+  const diff=birthdayDate-now;
+  if(diff<=0){
+    setTimeout(showCakeScene,500);
+    return "💖 It’s Her Day 💖";
+  }
+  const d=Math.floor(diff/(1000*60*60*24));
+  const h=Math.floor((diff/(1000*60*60))%24);
+  const m=Math.floor((diff/(1000*60))%60);
+  const s=Math.floor((diff/1000)%60);
+  return `${d}d ${h}h ${m}m ${s}s`;
+}
+
+/* Render */
+function render(){
+  card.innerHTML=`
+    <div class="flex justify-center">
+      <img id="slide" src="${photos[photoIndex]}" class="photo">
+    </div>
+    <h1 class="text-4xl md:text-5xl font-serif gradient-text name-glow">${steps[step].title}</h1>
+    <p class="text-lg">${steps[step].text}</p>
+    <p class="text-pink-200 text-sm">⏳ ${getCountdown()}</p>
+    ${steps[step].final
+      ? `<button class="btn px-8 py-3 rounded-full text-white font-bold">Waiting… 💖</button>`
+      : `<button onclick="next()" class="btn px-8 py-3 rounded-full text-white font-bold">Next 💌</button>`
+    }
+  `;
+}
+
+/* Slideshow */
+setInterval(()=>{
+  photoIndex=(photoIndex+1)%photos.length;
+  const img=document.getElementById("slide");
+  if(img){
+    img.style.opacity=0;
+    setTimeout(()=>{
+      img.src=photos[photoIndex];
+      img.style.opacity=1;
+    },500);
+  }
+},4000);
+
+function next(){step++;render();}
+
+/* 🎂 Cake + Candle + Love */
+function showCakeScene(){
+  if(document.getElementById("cake")) return;
+
+  card.innerHTML=`
+    <div id="cake" class="space-y-6">
+      <div class="text-7xl animate-bounce">🎂</div>
+      <div id="candle" class="text-5xl animate-pulse">🕯️</div>
+      <p class="text-lg text-pink-200">Make a wish…</p>
+    </div>
+  `;
+
+  setTimeout(()=>{document.getElementById("candle").innerHTML="💨"},2000);
+  setTimeout(showFinalWish,3500);
+}
+
+/* 💖 Final Message */
+function showFinalWish(){
+  confetti({particleCount:600,spread:220});
+  confetti({particleCount:300,shapes:["heart"],colors:["#ff4d6d","#ff8fab"]});
+
+  card.innerHTML+=`
+    <div class="glass mt-6 p-6 rounded-2xl">
+      <p class="text-2xl gradient-text name-glow">
+        To the person who makes every day feel like a fairytale, happy birthday.<br>
+        May our love story continue to unfold with each passing year.
+      </p>
+    </div>
+  `;
+}
+
+render();
+
+/* ❤️ Floating hearts */
+const scene=new THREE.Scene();
+const camera=new THREE.PerspectiveCamera(60,innerWidth/innerHeight,.1,100);
+camera.position.z=10;
+const renderer=new THREE.WebGLRenderer({canvas:bgHearts,alpha:true});
+renderer.setSize(innerWidth,innerHeight);
+scene.add(new THREE.AmbientLight(0xffffff,1));
+
+const shape=new THREE.Shape();
+shape.moveTo(0,0);
+shape.bezierCurveTo(0,0,-.5,-.5,-1,0);
+shape.bezierCurveTo(-2,1.5,-.5,3,0,4);
+shape.bezierCurveTo(.5,3,2,1.5,1,0);
+const geo=new THREE.ExtrudeGeometry(shape,{depth:.5});
+for(let i=0;i<20;i++){
+  const h=new THREE.Mesh(geo,new THREE.MeshStandardMaterial({color:0xff4d6d}));
+  h.position.set((Math.random()-.5)*20,(Math.random()-.5)*20,0);
+  scene.add(h);
+}
+(function animate(){
+  renderer.render(scene,camera);
+  requestAnimationFrame(animate);
+})();
+</script>
+
+</body>
+</html>
