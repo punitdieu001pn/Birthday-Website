@@ -91,7 +91,6 @@ body{
 <div class="aurora"></div>
 <canvas id="bgHearts" class="fixed inset-0 z-[-1]"></canvas>
 
-<!-- 🌌 Stars -->
 <script>
 for(let i=0;i<120;i++){
   const s=document.createElement("div");
@@ -103,7 +102,6 @@ for(let i=0;i<120;i++){
 }
 </script>
 
-<!-- 🌸 Flowers -->
 <script>
 for(let i=0;i<35;i++){
   const f=document.createElement("div");
@@ -115,9 +113,9 @@ for(let i=0;i<35;i++){
 }
 </script>
 
-<!-- 🎶 Music -->
+<!-- 🎵 MUSIC UPDATED -->
 <audio id="bgMusic" autoplay loop muted>
-  <source src="music/birthday.mp3" type="audio/mpeg">
+  <source src="music/birthday.m4a" type="audio/mp4">
 </audio>
 
 <script>
@@ -142,18 +140,28 @@ document.addEventListener("click",()=>{
 </div>
 
 <script>
-/* 🎂 BIRTHDAY DATE — 13 FEB 2026 MIDNIGHT */
 const birthdayDate = new Date("2026-02-13T00:00:00");
 
-/* Photos */
+/* ✅ PHOTOS UPDATED */
 const photos=[
  "images/photo1.jpg",
  "images/photo2.jpg",
- "images/photo3.jpg"
+ "images/photo3.jpg",
+ "images/photo4.jpg",
+ "images/photo5.jpg",
+ "images/photo6.jpg",
+ "images/photo7.jpg",
+ "images/photo8.jpg",
+ "images/photo9.jpg",
+ "images/photo10.jpg",
+ "images/photo11.jpg",
+ "images/photo12.jpg",
+ "images/photo13.jpg",
+ "images/photo14.jpg"
 ];
+
 let photoIndex=0;
 
-/* Notes */
 const steps=[
  {title:"Hey Archana 💖",text:"Some feelings don’t need noise… they just exist."},
  {title:"A Little Truth 💌",text:"If looks could kill, I would have been dead by now from your captivating looks. Wish you a happy birthday!"},
@@ -164,7 +172,6 @@ const steps=[
 let step=0;
 const card=document.getElementById("card");
 
-/* Countdown */
 function getCountdown(){
   const now=new Date();
   const diff=birthdayDate-now;
@@ -179,7 +186,6 @@ function getCountdown(){
   return `${d}d ${h}h ${m}m ${s}s`;
 }
 
-/* Render */
 function render(){
   card.innerHTML=`
     <div class="flex justify-center">
@@ -195,7 +201,6 @@ function render(){
   `;
 }
 
-/* Slideshow */
 setInterval(()=>{
   photoIndex=(photoIndex+1)%photos.length;
   const img=document.getElementById("slide");
@@ -210,62 +215,7 @@ setInterval(()=>{
 
 function next(){step++;render();}
 
-/* 🎂 Cake + Candle + Love */
-function showCakeScene(){
-  if(document.getElementById("cake")) return;
-
-  card.innerHTML=`
-    <div id="cake" class="space-y-6">
-      <div class="text-7xl animate-bounce">🎂</div>
-      <div id="candle" class="text-5xl animate-pulse">🕯️</div>
-      <p class="text-lg text-pink-200">Make a wish…</p>
-    </div>
-  `;
-
-  setTimeout(()=>{document.getElementById("candle").innerHTML="💨"},2000);
-  setTimeout(showFinalWish,3500);
-}
-
-/* 💖 Final Message */
-function showFinalWish(){
-  confetti({particleCount:600,spread:220});
-  confetti({particleCount:300,shapes:["heart"],colors:["#ff4d6d","#ff8fab"]});
-
-  card.innerHTML+=`
-    <div class="glass mt-6 p-6 rounded-2xl">
-      <p class="text-2xl gradient-text name-glow">
-        To the person who makes every day feel like a fairytale, happy birthday.<br>
-        May our love story continue to unfold with each passing year.
-      </p>
-    </div>
-  `;
-}
-
 render();
-
-/* ❤️ Floating hearts */
-const scene=new THREE.Scene();
-const camera=new THREE.PerspectiveCamera(60,innerWidth/innerHeight,.1,100);
-camera.position.z=10;
-const renderer=new THREE.WebGLRenderer({canvas:bgHearts,alpha:true});
-renderer.setSize(innerWidth,innerHeight);
-scene.add(new THREE.AmbientLight(0xffffff,1));
-
-const shape=new THREE.Shape();
-shape.moveTo(0,0);
-shape.bezierCurveTo(0,0,-.5,-.5,-1,0);
-shape.bezierCurveTo(-2,1.5,-.5,3,0,4);
-shape.bezierCurveTo(.5,3,2,1.5,1,0);
-const geo=new THREE.ExtrudeGeometry(shape,{depth:.5});
-for(let i=0;i<20;i++){
-  const h=new THREE.Mesh(geo,new THREE.MeshStandardMaterial({color:0xff4d6d}));
-  h.position.set((Math.random()-.5)*20,(Math.random()-.5)*20,0);
-  scene.add(h);
-}
-(function animate(){
-  renderer.render(scene,camera);
-  requestAnimationFrame(animate);
-})();
 </script>
 
 </body>
