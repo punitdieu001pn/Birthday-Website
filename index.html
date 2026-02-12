@@ -12,75 +12,44 @@
 body{
   margin:0;
   font-family:Arial, sans-serif;
-  overflow:hidden;
-  background:linear-gradient(-45deg,#1a001f,#3a003c,#4a001f,#1a001f);
-  background-size:400% 400%;
-  animation:gradientMove 12s ease infinite;
+  background:linear-gradient(135deg,#5f0040,#330033,#5f0040);
   color:white;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  height:100vh;
+  overflow:hidden;
 }
 
-@keyframes gradientMove{
-  0%{background-position:0% 50%}
-  50%{background-position:100% 50%}
-  100%{background-position:0% 50%}
+/* Card */
+.card{
+  background:rgba(0,0,0,0.6);
+  padding:30px;
+  border-radius:25px;
+  text-align:center;
+  width:95%;
+  max-width:900px;
+  z-index:2;
 }
 
-/* 🌹 Rose Rain */
-.rose{
-  position:fixed;
-  top:-10%;
-  font-size:24px;
-  animation:fall linear infinite;
-  z-index:0;
-}
-
-@keyframes fall{
-  to{
-    transform:translateY(110vh) rotate(360deg);
-  }
-}
-
-/* ✨ Sparkles */
-.sparkle{
-  position:fixed;
-  width:3px;
-  height:3px;
-  background:white;
-  border-radius:50%;
-  animation:twinkle 2s infinite alternate;
-  z-index:0;
-}
-
-@keyframes twinkle{
-  from{opacity:0.2}
-  to{opacity:1}
-}
-
+/* Photo */
 .photo{
   width:320px;
   height:420px;
   object-fit:cover;
   border-radius:20px;
-  box-shadow:0 20px 50px rgba(255,0,100,.6);
+  box-shadow:0 20px 50px rgba(255,0,120,.6);
+  display:block;
+  margin:0 auto;
 }
 
-.card{
-  position:relative;
-  z-index:2;
-  background:rgba(0,0,0,0.6);
-  backdrop-filter:blur(20px);
-  padding:30px;
-  border-radius:25px;
-  text-align:center;
-  max-width:900px;
-}
-
+/* Button */
 .btn{
   background:linear-gradient(135deg,#ff0066,#ff3366);
   padding:12px 28px;
   border-radius:30px;
   font-weight:bold;
-  margin-top:15px;
+  margin-top:20px;
   cursor:pointer;
   border:none;
   color:white;
@@ -89,50 +58,70 @@ body{
 .btn:hover{
   transform:scale(1.05);
 }
+
+/* 🌸 FLOWER RAIN */
+.flower{
+  position:fixed;
+  top:-10%;
+  pointer-events:none;
+  z-index:1;
+  animation:fall linear forwards;
+}
+
+@keyframes fall{
+  0%{
+    transform:translateY(-10vh) rotate(0deg);
+    opacity:1;
+  }
+  100%{
+    transform:translateY(110vh) rotate(360deg);
+    opacity:0.8;
+  }
+}
 </style>
 </head>
 
 <body>
-
-<!-- 🌹 ROSE RAIN SCRIPT -->
-<script>
-const flowers = ["🌺","🌸","🌷","💖","✨"];
-
-for(let i=0;i<60;i++){
-  const r=document.createElement("div");
-  r.className="rose";
-  r.innerHTML = flowers[Math.floor(Math.random()*flowers.length)];
-  r.style.left = Math.random()*100+"vw";
-  r.style.fontSize = (20 + Math.random()*20)+"px";
-  r.style.animationDuration = (5 + Math.random()*7)+"s";
-  r.style.opacity = 0.7 + Math.random()*0.3;
-  document.body.appendChild(r);
-}
-</script>
-
-<!-- ✨ SPARKLES -->
-<script>
-for(let i=0;i<120;i++){
-  const s=document.createElement("div");
-  s.className="sparkle";
-  s.style.left=Math.random()*100+"vw";
-  s.style.top=Math.random()*100+"vh";
-  document.body.appendChild(s);
-}
-</script>
 
 <!-- 🎵 MUSIC -->
 <audio id="bgMusic" autoplay loop muted>
   <source src="music/birthday.m4a" type="audio/mp4">
 </audio>
 
-<div class="flex items-center justify-center h-screen">
-  <div id="card" class="card"></div>
-</div>
+<div id="card" class="card"></div>
 
 <script>
-const birthdayDate=new Date("2026-02-13T00:00:00");
+/* 🎵 MUSIC UNMUTE ON TAP */
+const music=document.getElementById("bgMusic");
+document.addEventListener("click",()=>{
+  if(music.muted){
+    music.muted=false;
+    music.volume=0.5;
+    music.play().catch(()=>{});
+  }
+});
 
+/* 🌸 FLOWER RAIN */
+function createFlower(){
+  const flower=document.createElement("div");
+  flower.className="flower";
+
+  const flowers=["🌸","🌹","🌺","💮"];
+  flower.innerHTML=flowers[Math.floor(Math.random()*flowers.length)];
+
+  flower.style.left=Math.random()*100+"vw";
+  flower.style.fontSize=(20+Math.random()*20)+"px";
+  flower.style.animationDuration=(6+Math.random()*6)+"s";
+
+  document.body.appendChild(flower);
+
+  setTimeout(()=>{
+    flower.remove();
+  },12000);
+}
+setInterval(createFlower,400);
+
+/* 📸 PHOTOS */
 const photos=[
  "images/photo1.jpg",
  "images/photo2.jpg",
@@ -150,83 +139,61 @@ const photos=[
  "images/photo14.jpg"
 ];
 
-let photoIndex=0;
 let step=0;
 const card=document.getElementById("card");
 
-/* MUSIC UNMUTE */
-const music=document.getElementById("bgMusic");
-document.addEventListener("click",()=>{
- if(music.muted){
-   music.muted=false;
-   music.volume=0.5;
-   music.play().catch(()=>{});
- }
-});
-
-/* COUNTDOWN */
-function getCountdown(){
- const now=new Date();
- const diff=birthdayDate-now;
- if(diff<=0){
-   setTimeout(showCake,800);
-   return "💖 It's Her Day 💖";
- }
- const d=Math.floor(diff/86400000);
- const h=Math.floor(diff/3600000)%24;
- const m=Math.floor(diff/60000)%60;
- const s=Math.floor(diff/1000)%60;
- return `${d}d ${h}h ${m}m ${s}s`;
-}
-
-/* RENDER */
+/* STEP FLOW */
 function render(){
- card.innerHTML=`
-   <img src="${photos[photoIndex]}" class="photo">
-   <h2 style="font-size:28px;margin-top:15px;">Hey Archana ❤️</h2>
-   <p style="margin-top:10px;">Some feelings don’t need noise… they just exist.</p>
-   <p style="margin-top:15px;color:pink;">⏳ ${getCountdown()}</p>
-   <button class="btn" onclick="next()">Next 💌</button>
- `;
-}
 
-setInterval(()=>{
- photoIndex=(photoIndex+1)%photos.length;
- render();
-},4000);
+  if(step===0){
+    card.innerHTML=`
+      <img src="${photos[0]}" class="photo">
+      <h2 style="font-size:28px;margin-top:15px;">Hey Archana 💖</h2>
+      <p>Some feelings don’t need noise… they just exist.</p>
+      <button class="btn" onclick="next()">Next 💌</button>
+    `;
+  }
+
+  else if(step===1){
+    card.innerHTML=`
+      <img src="${photos[1]}" class="photo">
+      <h2 style="font-size:28px;margin-top:15px;">A Little Truth 💌</h2>
+      <p>If looks could kill, I would have been dead by now from your captivating looks. Wish you a happy birthday!</p>
+      <button class="btn" onclick="next()">Next 💖</button>
+    `;
+  }
+
+  else if(step===2){
+    card.innerHTML=`
+      <img src="${photos[2]}" class="photo">
+      <h2 style="font-size:28px;margin-top:15px;">From My Heart ❤️</h2>
+      <p>Happy birthday to the one who makes my heart skip a beat and fills my days with pure joy. You are the reason for my happiness.</p>
+      <button class="btn" onclick="next()">Celebrate 🎉</button>
+    `;
+  }
+
+  else if(step===3){
+
+    confetti({particleCount:600,spread:180});
+    confetti({particleCount:300,shapes:["heart"],colors:["#ff4d6d","#ff8fab"]});
+
+    card.innerHTML=`
+      <h1 style="font-size:32px;color:pink;">Happy Birthday Archana 💖</h1>
+      <p style="margin-top:15px;">
+      To the person who makes every day feel like a fairytale,<br>
+      happy birthday. May our love story continue to unfold with each passing year.
+      </p>
+
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-top:20px;">
+        ${photos.map(p=>`<img src="${p}" style="width:100%;border-radius:15px;">`).join("")}
+      </div>
+    `;
+  }
+}
 
 function next(){
- step++;
- if(step>=3) return;
- render();
-}
-
-/* 🎂 CAKE */
-function showCake(){
- card.innerHTML=`
-   <div style="font-size:70px;">🎂</div>
-   <div id="candle" style="font-size:50px;cursor:pointer;">🕯️</div>
-   <p>Tap candle to blow 💨</p>
- `;
- document.getElementById("candle").onclick=function(){
-   this.innerHTML="💨";
-   setTimeout(showFinal,1000);
- };
-}
-
-/* 💖 FINAL */
-function showFinal(){
- confetti({particleCount:600,spread:180});
- card.innerHTML=`
-   <h1 style="font-size:30px;color:pink;">Happy Birthday Archana 💖</h1>
-   <p style="margin-top:15px;">
-   To the person who makes every day feel like a fairytale,<br>
-   happy birthday. May our love story continue to unfold with each passing year.
-   </p>
-   <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-top:20px;">
-     ${photos.map(p=>`<img src="${p}" style="width:100%;border-radius:15px;">`).join("")}
-   </div>
- `;
+  step++;
+  render();
 }
 
 render();
